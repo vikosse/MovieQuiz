@@ -5,6 +5,7 @@ final class MovieQuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = 20
         let currentQuestion = questions[currentQuestionIndex]
         let question = convert(model: currentQuestion)
         show(quiz: question)
@@ -109,7 +110,6 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor =
             isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        imageView.layer.cornerRadius = 20
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.showNextQuestionOrResults()
@@ -137,7 +137,6 @@ final class MovieQuizViewController: UIViewController {
     private func show(quiz step: QuizStepViewStateModel) {
         imageView.layer.borderWidth = 0
         imageView.layer.borderColor = UIColor.clear.cgColor
-        imageView.layer.cornerRadius = 0
 
         yesButton.isEnabled = true
         noButton.isEnabled = true
