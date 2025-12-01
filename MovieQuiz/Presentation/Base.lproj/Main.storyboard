@@ -44,6 +44,9 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
+                                        <constraints>
+                                            <constraint firstItem="lRh-kU-gjm" firstAttribute="top" secondItem="CCD-1l-dZP" secondAttribute="top" constant="10" id="UDM-g0-w6w"/>
+                                        </constraints>
                                     </stackView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="o2a-37-6uy" userLabel="Preview Image">
                                         <rect key="frame" x="0.0" y="43.666666666666629" width="362" height="543"/>
