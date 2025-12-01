@@ -12,6 +12,7 @@ final class MovieQuizViewController: UIViewController {
     }
 
     // MARK: - Private Properties
+    
     private let questions: [QuizQuestion] = [
         QuizQuestion(
             image: "The Godfather",
@@ -69,6 +70,7 @@ final class MovieQuizViewController: UIViewController {
     private var correctAnswers = 0
 
     // MARK: - IBOutlets & IBActions
+    
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var textLabel: UILabel!
     @IBOutlet private var counterLabel: UILabel!
@@ -84,6 +86,7 @@ final class MovieQuizViewController: UIViewController {
     }
 
     // MARK: - Private functions
+    
     private func convert(model: QuizQuestion) -> QuizStepViewStateModel {
         return QuizStepViewStateModel(
             image: UIImage(named: model.image) ?? UIImage(),
@@ -108,8 +111,9 @@ final class MovieQuizViewController: UIViewController {
         noButton.isEnabled = false
 
         imageView.layer.borderWidth = 8
-        imageView.layer.borderColor =
-            isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+        imageView.layer.borderColor = isCorrect
+        ? UIColor.ypGreen.cgColor
+        : UIColor.ypRed.cgColor
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.showNextQuestionOrResults()
@@ -153,8 +157,7 @@ final class MovieQuizViewController: UIViewController {
             preferredStyle: .alert
         )
 
-        let action = UIAlertAction(title: "Сыграть ещё раз", style: .default) {
-            _ in
+        let action = UIAlertAction(title: "Сыграть ещё раз", style: .default) { _ in
             self.currentQuestionIndex = 0
             self.correctAnswers = 0
 
