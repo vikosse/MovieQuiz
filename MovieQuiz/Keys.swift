@@ -13,5 +13,3 @@ enum Keys {
     static let bestGameDate = "bestGame.date"
     static let gamesCount = "gamesCount"
 }
-
-

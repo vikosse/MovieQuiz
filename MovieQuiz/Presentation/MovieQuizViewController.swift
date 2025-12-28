@@ -154,5 +154,3 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         alertPresenter.show(in: self, model: alertModel)
     }
 }
-
-

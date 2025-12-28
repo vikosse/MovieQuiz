@@ -15,4 +15,3 @@ struct GameResult {
         correct > another.correct
     }
 }
-
