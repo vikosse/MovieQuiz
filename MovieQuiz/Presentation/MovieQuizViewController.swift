@@ -37,7 +37,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var currentQuestion: QuizQuestion?
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
-    private var alertPresenter = AlertPresenter()
+ //   private var alertPresenter = AlertPresenter()
     private let statisticService: StatisticServiceProtocol = StatisticService()
     
     // MARK: - IBOutlets & IBActions
@@ -89,7 +89,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         : UIColor.ypRed.cgColor
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.showNextQuestionOrResults()
         }
     }
@@ -100,8 +100,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             let bestGame = statisticService.bestGame
             let formattedAccuracy = String(format: "%.2f", statisticService.totalAccuracy)
             
-            var message = "Ваш результат: \(correctAnswers)/\(questionsAmount)\n"
-            message += "Сыграно квизов: \(statisticService.gamesCount)\n"
+            var message = """
+            Ваш результат: \(correctAnswers)/\(questionsAmount)\n
+            Сыграно квизов: \(statisticService.gamesCount)\n
+            """
             
             if bestGame.total > 0 {
                 message += "Рекорд: \(bestGame.correct)/\(bestGame.total) (\(bestGame.date.dateTimeString))\n"
@@ -151,6 +153,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             questionFactory?.requestNextQuestion()
         }
         
-        alertPresenter.show(in: self, model: alertModel)
+        AlertPresenter.show(in: self, model: alertModel)
     }
 }
