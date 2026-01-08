@@ -6,10 +6,20 @@
 //
 
 import Foundation
+import UIKit
+
+enum QuestionFactoryError: LocalizedError {
+    case failedToLoadPoster
+    
+    var errorDescription: String? {
+        "Не удалось загрузить постер"
+    }
+}
 
 final class QuestionFactory : QuestionFactoryProtocol {
     
     // MARK: Private properties
+    
     private let moviesLoader: MoviesLoading
     weak var delegate: QuestionFactoryDelegate?
     
@@ -76,33 +86,51 @@ final class QuestionFactory : QuestionFactoryProtocol {
      */
     
     // MARK: Private functions
+    
     func requestNextQuestion() {
         DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            let index = (0..<self.movies.count).randomElement() ?? 0
+            guard let self else { return }
             
-            guard let movie = self.movies[safe: index] else { return }
-            
-            var imageData = Data()
-            
-            do {
-                imageData = try Data(contentsOf: movie.resizedImageURL)
-            } catch {
-                print("Failed to load image")
+            guard !self.movies.isEmpty else {
+                DispatchQueue.main.async { [weak self] in
+                    self?.delegate?.didFailToLoadData(with: QuestionFactoryError.failedToLoadPoster)
+                }
+                return
             }
             
-            let rating = Float(movie.rating) ?? 0
+            let maxAttempts = 5
             
-            let text = "Рейтинг этого фильма больше чем 7?"
-            let correctAnswer = rating > 7
-            
-            let question = QuizQuestion(image: imageData,
-                                        text: text,
-                                        correctAnswer: correctAnswer)
+            for _ in 0..<maxAttempts {
+                let index = (0..<self.movies.count).randomElement() ?? 0
+                guard let movie = self.movies[safe: index] else { continue }
+                
+                let url = movie.resizedImageURL
+                print("Poster URL:", url.absoluteString)
+                
+                guard let imageData = try? Data(contentsOf: url),
+                      UIImage(data: imageData) != nil
+                else {
+                    continue
+                }
+                
+                let rating = Float(movie.rating) ?? 0
+                let text = "Рейтинг этого фильма больше чем 7?"
+                let correctAnswer = rating > 7
+                
+                let question = QuizQuestion(
+                    imageData: imageData,
+                    text: text,
+                    correctAnswer: correctAnswer
+                )
+                
+                DispatchQueue.main.async { [weak self] in
+                    self?.delegate?.didReceiveNextQuestion(question: question)
+                }
+                return
+            }
             
             DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                self.delegate?.didReceiveNextQuestion(question: question)
+                self?.delegate?.didFailToLoadData(with: QuestionFactoryError.failedToLoadPoster)
             }
         }
     }
@@ -110,7 +138,7 @@ final class QuestionFactory : QuestionFactoryProtocol {
     func loadData() {
         moviesLoader.loadMovies { [weak self] result in
             DispatchQueue.main.async {
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case .success(let mostPopularMovies):
                     self.movies = mostPopularMovies.items
